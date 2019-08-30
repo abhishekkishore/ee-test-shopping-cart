@@ -1,11 +1,13 @@
 package ee.techtest.shoppingcart;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class Product {
 	private String name;
-	private double price;
-	public Product(String name, double price) {
+	private BigDecimal price;
+	public Product(String name, BigDecimal price) {
 		super();
 		this.name = name;
 		this.price = price;
@@ -13,10 +15,9 @@ public class Product {
 	public String getName() {
 		return name;
 	}
-	public double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
-	
 	@Override
 	public int hashCode() {
 		return Objects.hash(name, price);
@@ -35,8 +36,15 @@ public class Product {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
-			return false;
+		if (price == null) {
+			if (other.price != null)
+				return false;
+		} else {
+			// Bring up both prices to the same scale before comparing.
+			int greaterScale = price.scale() > other.price.scale()?price.scale():other.price.scale();
+			if (!price.setScale(greaterScale, RoundingMode.HALF_UP).equals(other.price.setScale(greaterScale, RoundingMode.HALF_UP)))
+				return false;
+		}
 		return true;
 	}
 }
