@@ -10,7 +10,6 @@ public class ShoppingCart {
 	private int quantity = 0;
 	
 	public BigDecimal getTotalPrice() {
-//		return Math.round((product.getPrice() * quantity) * 100)/100.0;
 		return product.getPrice().multiply(new BigDecimal(quantity)).setScale(2, RoundingMode.HALF_UP);
 	}
 	
